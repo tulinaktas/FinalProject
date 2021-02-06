@@ -1,10 +1,12 @@
-﻿using Entities.Abstract;
+﻿using Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text;
 
-namespace DataAccess.Abstract
+//namespace -- classları intefaceleri vs belirli bir isim uzayında
+//ulasmak icin
+namespace Core.DataAccess
 {//generic constraint
     //class: referans tip ve
     //IEntity: IEntity ve ya IEntity implement nesnelerine ulasir

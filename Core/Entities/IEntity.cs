@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Entities.Abstract
+namespace Core.Entities
 {
     // bu bir database nesnesidir diye işaretlemek için
     public interface IEntity
