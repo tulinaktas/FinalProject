@@ -1,3 +1,7 @@
+using Business.Abstract;
+using Business.Concrete;
+using DataAccess.Abstract;
+using DataAccess.Concrete.EntityFramework;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -25,7 +29,13 @@ namespace WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //Autofac, Ninject, CastleWindsor, StructureMap, LightInject, DryInject --> IoC Container
+            //AOP (autofac cok guzel kullanýr aop yi o yuzden ilerleyen zamanda ejekte edecegiz)
             services.AddControllers();
+            //iproductsevice gordugunde productmanager newledik
+            services.AddSingleton<IProductService, ProductManager>();
+            //bunu ise productmanagerin bagýmlýlýgýný hallettik efproductdal newledik
+            services.AddSingleton<IProductDal, EFProductDal>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

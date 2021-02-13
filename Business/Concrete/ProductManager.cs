@@ -42,10 +42,10 @@ namespace Business.Concrete
             //kontroller yapıldıktan sonra return
             //return new DataResult<List<Product>>
             // (_productDal.GetAll(),true,"Urunler listelendi");
-            //if (DateTime.Now.Hour == 22) // sistemde 22den sonra listelenmesini istemiyoruz
-            //{
-            //    return new ErrorDataResult<List<Product>>(Messages.MaintenanceTime);
-            //}
+            if (DateTime.Now.Hour == 1) // sistemde 22de listelenmesini istemiyoruz
+            {
+                return new ErrorDataResult<List<Product>>(Messages.MaintenanceTime);
+            }
 
             return new SuccessDataResult<List<Product>>
              (_productDal.GetAll(),Messages.ProductListed);
