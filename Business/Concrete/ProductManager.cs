@@ -1,9 +1,13 @@
 ﻿using Business.Abstract;
 using Business.Constants;
+using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Validation;
+using Core.CrossCuttingConcerns.Validation;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
 using Entities.DTOs;
+using FluentValidation;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -18,15 +22,35 @@ namespace Business.Concrete
             _productDal = productDal;
         }
 
+        [ValidationAspect(typeof(ProductValidator))]
         public IResult Add(Product product)
         {
             //business codes --> gecerliyse ekle degilse ekleme gibi
 
-            if (product.ProductName.Length<2)
-            {
-                //magic string 
-                return new ErrorResult(Messages.ProductNameInvalid);
-            }
+            //validation(nesnenin yapısal olarak uygun olup olmadıgını kontrol eder)
+            //business ve validation kodlarını ayrı ayrı yapmalıyız
+
+            //if (product.UnitPrice <= 0)
+            //{
+            //    return new ErrorResult(Messages.UnitPriceInvalid);
+            //}
+
+            //if (product.ProductName.Length<2) // validation
+            //{
+            //    //magic string 
+            //    return new ErrorResult(Messages.ProductNameInvalid);
+            //}
+
+            //var context = new ValidationContext<Product>(product);
+            //ProductValidator productValidator = new ProductValidator();
+            //var result = productValidator.Validate(context);
+            //if (!result.IsValid)
+            //{
+            //    throw new ValidationException(result.Errors);
+            //}
+            //ValidationTool.Validate(new ProductValidator(), product);
+
+
             _productDal.Add(product);
             //return new Result(true, "Urun eklendi");
             //return new Result(true);

@@ -33,9 +33,9 @@ namespace WebAPI
             //AOP (autofac cok guzel kullanýr aop yi o yuzden ilerleyen zamanda ejekte edecegiz)
             services.AddControllers();
             //iproductsevice gordugunde productmanager newledik
-            services.AddSingleton<IProductService, ProductManager>();
+            //services.AddSingleton<IProductService, ProductManager>();
             //bunu ise productmanagerin bagýmlýlýgýný hallettik efproductdal newledik
-            services.AddSingleton<IProductDal, EFProductDal>();
+            //services.AddSingleton<IProductDal, EFProductDal>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
