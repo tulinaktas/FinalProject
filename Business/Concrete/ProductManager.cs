@@ -1,8 +1,10 @@
 ﻿using Business.Abstract;
+using Business.CCS;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Validation;
 using Core.CrossCuttingConcerns.Validation;
+using Core.Utilities.Business;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
@@ -10,6 +12,7 @@ using Entities.DTOs;
 using FluentValidation;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Business.Concrete
@@ -17,9 +20,11 @@ namespace Business.Concrete
     public class ProductManager : IProductService
     {
         IProductDal _productDal;
-        public ProductManager(IProductDal productDal)
+        ICategoryService _categoryService;
+        public ProductManager(IProductDal productDal, ICategoryService categoryService)
         {
             _productDal = productDal;
+            _categoryService = categoryService;
         }
 
         [ValidationAspect(typeof(ProductValidator))]
@@ -50,13 +55,17 @@ namespace Business.Concrete
             //}
             //ValidationTool.Validate(new ProductValidator(), product);
 
+            //yeni kurla --> eger mevcut kategori sayısı 15i gectiyse yeni urun eklenemez
 
+            IResult result = BusinessRules.Run(CheckIfProductCountOfCategoryCorrect(product.CategoryId),
+                CheckIfProductNameExists(product.ProductName), CheckIfCategoryLimit());
+
+            if (result != null)
+            {
+                return result;
+            }
             _productDal.Add(product);
-            //return new Result(true, "Urun eklendi");
-            //return new Result(true);
-
             return new SuccessResult(Messages.ProductAdded);
-            //return new SuccessResult();
         }
 
         public IDataResult<List<Product>> GetAll()
@@ -98,5 +107,43 @@ namespace Business.Concrete
             return new SuccessDataResult<List<ProductDetailDto>>
                 (_productDal.GetProductDetails());
         }
+
+        [ValidationAspect(typeof(ProductValidator))]
+        public IResult Update(Product product)
+        {
+            throw new NotImplementedException();
+        }
+
+        private IResult CheckIfProductCountOfCategoryCorrect(int categoryId) //iş kuralı PARCACIGI
+        {
+            var result = _productDal.GetAll(p => p.CategoryId == categoryId);
+            if (result.Count >= 10)
+            {
+                return new ErrorResult(Messages.ProductCountOfCategoryError);
+            }
+            return new SuccessResult();
+        }
+
+        private IResult CheckIfProductNameExists(string productName)
+        {
+            //var result = _productDal.Get(p => p.ProductName == productName); ??? 
+            var result = _productDal.GetAll(p => p.ProductName == productName).Any();
+            if (!result)
+            {
+               return new ErrorResult(Messages.SameNameProductError);
+            }
+            return new SuccessResult();
+        }
+
+        private IResult CheckIfCategoryLimit()
+        {
+            if(_categoryService.GetAll().Data.Count > 15)
+            {
+                return new ErrorResult(Messages.CategoryLimitExceded);
+            }
+
+            return new SuccessResult();
+        }
     }
 }
+
