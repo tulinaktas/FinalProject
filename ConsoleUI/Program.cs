@@ -20,15 +20,15 @@ namespace ConsoleUI
         private static void CategoryTest()
         {
             CategoryManager categoryManager = new CategoryManager(new EFCategoryDal());
-            foreach (var category in categoryManager.GetAll())
+            /*foreach (var category in categoryManager.GetAll())
             {
                 Console.WriteLine(category.CategoryName);
-            }
+            }*/
         }
 
         private static void ProductTest()
         {
-            ProductManager productManager
+            /*ProductManager productManager
                 = new ProductManager(new EFProductDal());// new InMemoryProductDal();
 
             var result = productManager.GetProductDetails();
@@ -49,7 +49,7 @@ namespace ConsoleUI
             foreach (var product in productManager.GetByUnitPrice(50, 100).Data)
             {
                 Console.WriteLine(product.ProductName);
-            }
+            }*/
         }
     }
 }
