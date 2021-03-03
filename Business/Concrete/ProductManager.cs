@@ -3,6 +3,8 @@ using Business.BusinessAspects.Autofac;
 using Business.CCS;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Caching;
+using Core.Aspects.Autofac.Transaction;
 using Core.Aspects.Autofac.Validation;
 using Core.CrossCuttingConcerns.Validation;
 using Core.Utilities.Business;
@@ -30,6 +32,7 @@ namespace Business.Concrete
 
         [SecuredOperation("product.add, admin")]
         [ValidationAspect(typeof(ProductValidator))]
+        [CacheRemoveAspect("IProductService.Get")]
         public IResult Add(Product product)
         {
             //business codes --> gecerliyse ekle degilse ekleme gibi
@@ -70,6 +73,7 @@ namespace Business.Concrete
             return new SuccessResult(Messages.ProductAdded);
         }
 
+        [CacheAspect] //key,value
         public IDataResult<List<Product>> GetAll()
         {
             //İs kodlari
@@ -92,6 +96,7 @@ namespace Business.Concrete
                 (_productDal.GetAll(p => p.CategoryId == categoryId));
         }
 
+        [CacheAspect]
         public IDataResult<Product> GetById(int productId)
         {
             return new SuccessDataResult<Product>
@@ -111,15 +116,21 @@ namespace Business.Concrete
         }
 
         [ValidationAspect(typeof(ProductValidator))]
+        [CacheRemoveAspect("IProductService.Get")]
         public IResult Update(Product product)
         {
-            throw new NotImplementedException();
+            var result = _productDal.GetAll(p => p.CategoryId == product.CategoryId).Count;
+            if (result >= 10)
+            {
+                return new ErrorResult();
+            }
+            return new SuccessResult();
         }
 
         private IResult CheckIfProductCountOfCategoryCorrect(int categoryId) //iş kuralı PARCACIGI
         {
-            var result = _productDal.GetAll(p => p.CategoryId == categoryId);
-            if (result.Count >= 10)
+            var result = _productDal.GetAll(p => p.CategoryId == categoryId).Count;
+            if (result >= 15)
             {
                 return new ErrorResult(Messages.ProductCountOfCategoryError);
             }
@@ -130,7 +141,7 @@ namespace Business.Concrete
         {
             //var result = _productDal.Get(p => p.ProductName == productName); ??? 
             var result = _productDal.GetAll(p => p.ProductName == productName).Any();
-            if (!result)
+            if (result)
             {
                return new ErrorResult(Messages.SameNameProductError);
             }
@@ -145,6 +156,12 @@ namespace Business.Concrete
             }
 
             return new SuccessResult();
+        }
+
+        [TransactionScopeAspect]
+        public IResult AddTransactionalTest(Product product)
+        {
+            throw new NotImplementedException();
         }
     }
 }
