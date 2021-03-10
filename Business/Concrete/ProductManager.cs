@@ -33,7 +33,8 @@ namespace Business.Concrete
         [SecuredOperation("product.add, admin")]
         [ValidationAspect(typeof(ProductValidator))]
         [CacheRemoveAspect("IProductService.Get")]
-        public IResult Add(Product product)
+        public IResult Add(Product product
+)
         {
             //business codes --> gecerliyse ekle degilse ekleme gibi
 
