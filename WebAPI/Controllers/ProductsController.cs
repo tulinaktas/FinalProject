@@ -31,7 +31,7 @@ namespace WebAPI.Controllers
         //public List<Product> Get()
         public IActionResult GetAll()
         {
-            Thread.Sleep(5000); // frontendde spinnerı gorebilmek icin
+            Thread.Sleep(2000); // frontendde spinnerı gorebilmek icin
             //productmanagera bagımlıyız su anda
             //dependency chain
             //IProductService productServices = new ProductManager(new EFProductDal());
@@ -51,10 +51,20 @@ namespace WebAPI.Controllers
             {
                 return Ok(result);
             }
-
             return BadRequest(result);
         }
 
+        [HttpGet("getbycategory")]
+        public IActionResult GetByCategory(int categoryId)
+        {
+            var result = _productService.GetAllByCategory(categoryId);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+
+            return BadRequest(result);
+        }
         [HttpPost("add")]
         public IActionResult Add(Product product)
         {
