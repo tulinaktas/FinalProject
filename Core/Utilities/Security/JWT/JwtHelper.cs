@@ -49,6 +49,7 @@ namespace Core.Utilities.Security.JWT
                 claims: SetClaims(user, operationClaims),
                 signingCredentials: signingCredentials
             );
+
             return jwt;
         }
 
