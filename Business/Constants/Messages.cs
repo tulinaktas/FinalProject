@@ -19,7 +19,7 @@ namespace Business.Constants
         public static string SameNameProductError = "Ayni isimli product eklenemez";
         public static string CategoryLimitExceded="Kategori limiti aşıldı, yeni urun eklenemiyor";
         public static string AuthorizationDenied ="Yetkiniz yok";
-        public static string PasswordError="";
+        public static string PasswordError="Parola hatası";
         public static string SuccessfulLogin="Basarili giris";
         public static string UserAlreadyExists="Kullanıcı zaten var";
         public static string AccessTokenCreated="Token olusturuldu";
